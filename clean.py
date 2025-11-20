@@ -122,3 +122,22 @@ def master_data_pipeline(df_raw, df_abs):
 
     print(f"Final Shape: {df.shape}")
     return df
+
+    # 1. Load your raw datasets (Change filenames to match your actual files)
+df_main_raw = pd.read_csv('FEG_Main_Dataset.csv') 
+df_abs_raw = pd.read_csv('ABS_Industry_Wages.csv') 
+
+# 2. Run the Master Pipeline
+# This cleans df_main_raw using the rules we wrote and the ABS data
+df_final = master_data_pipeline(df_main_raw, df_abs_raw)
+
+# 3. Verification Checks
+print("\n--- Reliability Scores (Should be between 0.0 and 1.0) ---")
+print(df_final[['Wages Reliability', 'Annual Leave Reliability']].describe())
+
+print("\n--- Check for Leakage (Should be empty) ---")
+leakage_cols = [c for c in df_final.columns if 'CM Recommended' in c]
+print(f"Leaking columns remaining: {leakage_cols}")
+
+print("\n--- Check New Features ---")
+print(df_final[['IP_Tenure_Years', 'IP_Wage_to_ABS_Ratio']].head())
